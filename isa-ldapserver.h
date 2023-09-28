@@ -7,5 +7,8 @@
 
 #include <iostream>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 #endif // __ISA_LDAP_SERVER_H__
