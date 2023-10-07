@@ -71,9 +71,75 @@ int main(int argc, char *argv[]) {
 
     else
     {
-        std::cerr << "Invalid arguments" << std::endl;
+        std::cerr << "Invalid number of arguments" << std::endl;
         return 1;
     }
+
+
+    // creates socket
+    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSocket == -1)
+    {
+        std::cerr << "Error creating socket" << std::endl;
+        return 1;
+    }
+
+    // socket binding
+    sockaddr_in serverAddress{};
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_addr.s_addr = INADDR_ANY;
+    serverAddress.sin_port = htons(portNum);
+
+    if (bind(serverSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0)
+    {
+        std::cerr << "Error binding socket" << std::endl;
+        close(serverSocket);
+        return 1;
+    }
+
+    // listening for connections
+    if (listen(serverSocket, 5) < 0)
+    {
+        std::cerr << "Error listening on socket" << std::endl;
+        close(serverSocket);
+        return 1;
+    }
+
+    // accepting connections
+    sockaddr_in clientAddress{};
+    socklen_t clientAddressLen = sizeof(clientAddress);
+    int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
+
+    if (clientSocket < 0)
+    {
+        std::cerr << "Error accepting connection" << std::endl;
+        close(serverSocket);
+        return 1;
+    }
+
+    // reading from socket
+    char buffer[1024];
+    while (true)
+    {
+        memset(buffer, 0, sizeof(buffer));
+        size_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+        if (bytesRead <= 0)
+        {
+            std::cerr << "Error reading from socket" << std::endl;
+            break;
+        }
+
+        std::cout << "received:" << buffer << std::endl;
+
+        // sending response
+        std::string response = "OK";
+        send(clientSocket, response.c_str(), response.size(), 0);
+
+
+    }
+
+    close(serverSocket);
+    close(clientSocket);
 
     return 0;
 
