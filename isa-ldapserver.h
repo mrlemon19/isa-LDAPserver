@@ -8,6 +8,10 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <cstring>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 namespace fs = std::filesystem;
 
