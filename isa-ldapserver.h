@@ -1,4 +1,5 @@
-// implementation of Lightweight Directory Access Protocol (LDAP) server
+// isa-ldapserver.h
+// Lightweight Directory Access Protocol (LDAP) server implementation
 // vut fit isa project 2023/2024
 // @author: xlukas18
 
