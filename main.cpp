@@ -3,7 +3,7 @@
 // vut fit isa project 2023/2024
 // @author: xlukas18
 
-#include "isa-ldapserver.h"
+#include "main.h"
 int MAX_CLIENTS = 10;
 
 bool isValidPort (std::string port)
