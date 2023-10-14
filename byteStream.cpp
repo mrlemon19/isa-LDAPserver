@@ -19,4 +19,10 @@ void ByteStream::printBuffer() {
     std::cout << "Buffer: " << this->buffer << std::endl;
 }
 
+void ByteStream::setLenght(int lenght) {
+    this->lenght = lenght;
+}
 
+void ByteStream::setMessageID(int messageID) {
+    this->messageID = messageID;
+}
