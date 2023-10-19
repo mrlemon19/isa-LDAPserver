@@ -6,6 +6,14 @@
 #ifndef PARSE_PACKET_H
 #define PARSE_PACKET_H
 
+#include <cstring>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <vector>
+
 #include "byteStream.h"
+
+void parsePacket(ByteStream bs, int clientSocket);
 
 #endif // PARSE_PACKET_H
