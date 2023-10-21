@@ -15,6 +15,9 @@
 #include <arpa/inet.h>
 #include <thread>
 
+#include "byteStream.h"
+#include "parsePacket.h"
+
 namespace fs = std::filesystem;
 
 bool isValidPort (std::string port);
