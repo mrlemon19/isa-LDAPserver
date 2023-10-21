@@ -35,8 +35,6 @@ void craftPacketLDAP(std::vector<char> response, int clientSocket, int messageID
 void parsePacket(ByteStream bs, int clientSocket)
 {
 
-    std::cout << "parsing packet: " << bs.buffer << std::endl;
-
     if (bs.readByte() != 0x30){
         return; // not a ldap packet
         std::cout << "0x30 missing" << std::endl;
@@ -44,7 +42,6 @@ void parsePacket(ByteStream bs, int clientSocket)
     //bs.setLenght(static_cast<int>(static_cast<unsigned char>(bs.readByte()))); // set lenght of packet
 
     bs.readByte(); // skip lenght
-    std::cout << "parsing lenght" << std::endl;
 
     if (bs.readByte() != 0x02) {
         return; // not a ldap packet
@@ -81,7 +78,6 @@ void parsePacket(ByteStream bs, int clientSocket)
             
     }
 
-    std::cout << "parsed message id" << std::endl;
 
     std::vector<char> response;
 
