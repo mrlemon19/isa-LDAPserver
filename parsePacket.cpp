@@ -6,7 +6,7 @@
 #include "parsePacket.h"
 #include <iomanip>
 
-void craftPacketLDAP(std::vector<char> response, int clientSocket, int messageID)
+void sendPacketLDAP(std::vector<char> response, int clientSocket, int messageID)
 {
     // crafts LDAP packet backwards
     response.push_back(static_cast<char>(messageID));
@@ -18,11 +18,10 @@ void craftPacketLDAP(std::vector<char> response, int clientSocket, int messageID
     std::reverse(response.begin(), response.end());
 
     std::cout << "sending response" << std::endl;
-    // sendins response
+    // sends response
 
     std::cout << "response: ";
     for (char c : response) {
-        // Use std::hex to format as hexadecimal, and std::setw to set the width to 2 characters.
         std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(c)) << ", ";
     }
 
@@ -109,7 +108,7 @@ void parsePacket(ByteStream bs, int clientSocket)
             response.push_back(static_cast<char>(response.size()));
             response.push_back(0x61);
 
-            craftPacketLDAP(response, clientSocket, bs.getMessageID());
+            sendPacketLDAP(response, clientSocket, bs.getMessageID());
 
             break;
 
@@ -123,7 +122,7 @@ void parsePacket(ByteStream bs, int clientSocket)
 
             std::cout << "sending searchResDone" << std::endl;
 
-            craftPacketLDAP(response, clientSocket, bs.getMessageID());
+            sendPacketLDAP(response, clientSocket, bs.getMessageID());
 
             break;
 
