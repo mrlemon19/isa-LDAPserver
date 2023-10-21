@@ -26,3 +26,7 @@ void ByteStream::setLenght(int lenght) {
 void ByteStream::setMessageID(int messageID) {
     this->messageID = messageID;
 }
+
+int ByteStream::getMessageID() {
+    return this->messageID;
+}

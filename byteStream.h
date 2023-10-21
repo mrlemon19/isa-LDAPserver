@@ -20,4 +20,5 @@ class ByteStream
     void printBuffer();
     void setLenght(int lenght);
     void setMessageID(int messageID);
+    int getMessageID();
 };
