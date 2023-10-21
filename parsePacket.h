@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <vector>
+#include <algorithm>
 
 #include "byteStream.h"
 
