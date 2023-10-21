@@ -115,12 +115,25 @@ void parsePacket(ByteStream bs, int clientSocket)
 
         case 0x63:
             // search request
+
+            // just sends search result done
+            response = {0x00, 0x04, 0x00, 0x04, 0x00, 0x01, 0x0a};
+            response.push_back(static_cast<char>(response.size()));
+            response.push_back(0x65);
+
+            std::cout << "sending searchResDone" << std::endl;
+
+            craftPacketLDAP(response, clientSocket, bs.getMessageID());
+
             break;
 
         case 0x42:
             // unbind request
 
-            if (bs.readByte() == 0x00) exit(0); // exit if unbind request
+            if (bs.readByte() == 0x00) {
+                close(clientSocket); // exit if unbind request
+                return; 
+            }
 
             break;
 
