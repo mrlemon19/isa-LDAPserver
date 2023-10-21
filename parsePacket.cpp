@@ -115,6 +115,36 @@ void parsePacket(ByteStream bs, int clientSocket)
         case 0x63:
             // search request
 
+            bs.readByte(); // skip lenght
+            
+            if (bs.readByte() != 0x04) return; // error in search request
+
+            bs.readByte(); // skip for now
+
+            if (bs.readByte() != 0x0a) return; // error in search request
+
+            if (bs.readByte() != 0x01) return; // error in search request
+
+            bs.readByte(); // skip ldap scope
+
+            if (bs.readByte() != 0x0a) return; // error in search request
+
+            if (bs.readByte() != 0x01) return; // error in search request
+
+            bs.readByte(); // skip ldap deref aliases
+
+            if (bs.readByte() != 0x02) return; // error in search request
+
+            if (bs.readByte() != 0x01) return; // error in search request
+
+            bs.readByte(); // skip size limit
+
+            if (bs.readByte() != 0x02) return; // error in search request
+
+            if (bs.readByte() != 0x01) return; // error in search request
+
+            bs.readByte(); // skip time limit
+
             // just sends search result done
             response = {0x00, 0x04, 0x00, 0x04, 0x00, 0x01, 0x0a};
             response.push_back(static_cast<char>(response.size()));
