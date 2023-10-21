@@ -119,6 +119,9 @@ void parsePacket(ByteStream bs, int clientSocket)
 
         case 0x42:
             // unbind request
+
+            if (bs.readByte() == 0x00) exit(0); // exit if unbind request
+
             break;
 
         default:
