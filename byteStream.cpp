@@ -5,12 +5,12 @@
 
 #include "byteStream.h"
 
-ByteStream::ByteStream(char* buffer) {
+ByteStream::ByteStream(unsigned char* buffer) {
     this->buffer = buffer;
 }
 
-char ByteStream::readByte() {
-    char c = this->buffer[this->currentByte];
+unsigned char ByteStream::readByte() {
+    unsigned char c = this->buffer[this->currentByte];
     this->currentByte++;
     return c;
 }

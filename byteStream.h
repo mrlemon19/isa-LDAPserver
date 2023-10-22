@@ -10,13 +10,13 @@
 class ByteStream
 {
     public:
-    char* buffer;
+    unsigned char* buffer;
     int messageID;
     int currentByte = 0;
     int lenght;
 
-    ByteStream(char* buffer);
-    char readByte();
+    ByteStream(unsigned char* buffer);
+    unsigned char readByte();
     void printBuffer();
     void setLenght(int lenght);
     void setMessageID(int messageID);

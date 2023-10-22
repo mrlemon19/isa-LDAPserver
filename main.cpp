@@ -36,7 +36,7 @@ bool validDB(std::string fileStr, std::string &DBFile)
 }
 
 void handleClient(int clientSocket) {
-    char buffer[1024];
+    unsigned char buffer[1024];
 
     while (true) {
         ssize_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
@@ -48,7 +48,7 @@ void handleClient(int clientSocket) {
         // Process received data
         //message.assign(buffer, bytesRead);
 
-        char* pbuffer = buffer;
+        unsigned char* pbuffer = buffer;
         ByteStream bs(pbuffer);
 
         std::cout << "message received, parsing packet" << std::endl;
