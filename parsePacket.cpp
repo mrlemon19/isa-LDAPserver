@@ -145,7 +145,59 @@ void parsePacket(ByteStream bs, int clientSocket)
 
             bs.readByte(); // skip time limit
 
-            // just sends search result done
+            if (bs.readByte() != 0x01) return; // error in search request
+
+            if (bs.readByte() != 0x01) return; // error in search request
+
+            bs.readByte(); // skip types only
+
+            std::cout << "now parsing filter" << std::endl;
+            // filter
+
+            switch (bs.readByte()) {
+            case 0xa3:
+                // equalityMatch
+                std::cout << "equalityMatch" << std::endl;
+                bs.readByte(); // skip lenght
+
+
+
+                break;
+            
+            case 0xa4:
+                // substrings
+                std::cout << "substrings" << std::endl;
+                bs.readByte(); // skip lenght
+
+                break;
+
+            case 0xa2:
+                // not
+                std::cout << "not filter" << std::endl;
+                // TODO
+
+                break;
+
+            case 0xa1:
+                // or
+                std::cout << "or filter" << std::endl;
+                // TODO
+
+                break;
+
+            case 0xa0:
+                // and
+                std::cout << "and filter" << std::endl;
+                // TODO
+
+                break;
+
+            default:
+                return; // error in search request
+                break;
+            }
+
+            // sends search result done
             response = {0x00, 0x04, 0x00, 0x04, 0x00, 0x01, 0x0a};
             response.push_back(static_cast<char>(response.size()));
             response.push_back(0x65);
