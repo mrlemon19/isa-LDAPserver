@@ -79,6 +79,10 @@ void parsePacket(ByteStream bs, int clientSocket)
 
 
     std::vector<char> response;
+    std::string filterAtributeDesc;
+    std::string assertionValue;
+    std::string attributeDesc;
+    std::vector<std::string> attributeDescList;
 
     // protocol op
     switch (bs.readByte()) {
@@ -160,7 +164,41 @@ void parsePacket(ByteStream bs, int clientSocket)
                 std::cout << "equalityMatch" << std::endl;
                 bs.readByte(); // skip lenght
 
+                
+                if (bs.readByte() == 0x04)
+                {
+                    int lenght = static_cast<int>(bs.readByte());
+                    for (int i = 0; i < lenght; i++){
+                        filterAtributeDesc += bs.readByte();
+                    }
+                }
 
+                std::cout << "filterAtributeDsc: " << filterAtributeDesc << std::endl;
+
+                if (bs.readByte() == 0x04)
+                {
+                    int lenght = static_cast<int>(bs.readByte());
+                    for (int i = 0; i < lenght; i++){
+                        assertionValue += bs.readByte();
+                    }
+                }
+
+                std::cout << "assertionValue: " << assertionValue << std::endl;
+
+                while (bs.readByte() == 0x03) {
+                    attributeDesc = ""; // clear string buffer
+                    int lenght = static_cast<int>(bs.readByte());
+                    for (int i = 0; i < lenght; i++){
+                        attributeDesc += bs.readByte();
+                    }
+                    attributeDescList.push_back(attributeDesc);
+                }
+
+                std::cout << "attributeDescList: ";
+                for (std::string s : attributeDescList) {
+                    std::cout << s << ", ";
+                }
+                std::cout << std::endl;
 
                 break;
             
@@ -210,6 +248,8 @@ void parsePacket(ByteStream bs, int clientSocket)
 
         case 0x42:
             // unbind request
+
+            std::cout << "unbind request, BYE" << std::endl;
 
             if (bs.readByte() == 0x00) {
                 close(clientSocket); // exit if unbind request
