@@ -4,7 +4,6 @@
 // @author: xlukas18
 
 #include "parsePacket.h"
-#include <iomanip>
 
 void sendPacketLDAP(std::vector<char> response, int clientSocket, int messageID)
 {
@@ -79,10 +78,6 @@ void parsePacket(ByteStream bs, int clientSocket)
 
 
     std::vector<char> response;
-    std::string filterAtributeDesc;
-    std::string assertionValue;
-    std::string attributeDesc;
-    std::vector<std::string> attributeDescList;
 
     // protocol op
     switch (bs.readByte()) {
@@ -116,7 +111,7 @@ void parsePacket(ByteStream bs, int clientSocket)
 
             break;
 
-        case 0x63:
+        case 0x63: {
             // search request
 
             bs.readByte(); // skip lenght
@@ -156,84 +151,42 @@ void parsePacket(ByteStream bs, int clientSocket)
             bs.readByte(); // skip types only
 
             std::cout << "now parsing filter" << std::endl;
-            // filter
+            // parsing filter
 
-            switch (bs.readByte()) {
-            case 0xa3:
-                // equalityMatch
-                std::cout << "equalityMatch" << std::endl;
-                bs.readByte(); // skip lenght
-
-                
-                if (bs.readByte() == 0x04)
-                {
-                    int lenght = static_cast<int>(bs.readByte());
-                    for (int i = 0; i < lenght; i++){
-                        filterAtributeDesc += bs.readByte();
-                    }
-                }
-
-                std::cout << "filterAtributeDsc: " << filterAtributeDesc << std::endl;
-
-                if (bs.readByte() == 0x04)
-                {
-                    int lenght = static_cast<int>(bs.readByte());
-                    for (int i = 0; i < lenght; i++){
-                        assertionValue += bs.readByte();
-                    }
-                }
-
-                std::cout << "assertionValue: " << assertionValue << std::endl;
-
-                while (bs.readByte() == 0x03) {
-                    attributeDesc = ""; // clear string buffer
-                    int lenght = static_cast<int>(bs.readByte());
-                    for (int i = 0; i < lenght; i++){
-                        attributeDesc += bs.readByte();
-                    }
-                    attributeDescList.push_back(attributeDesc);
-                }
-
-                std::cout << "attributeDescList: ";
-                for (std::string s : attributeDescList) {
-                    std::cout << s << ", ";
-                }
-                std::cout << std::endl;
-
-                break;
             
-            case 0xa4:
-                // substrings
-                std::cout << "substrings" << std::endl;
-                bs.readByte(); // skip lenght
+            std::vector<char> filter;
+            std::vector<attributeType_t> attributes;
 
-                break;
+            // TODO catch when there is no filter or attributes
 
-            case 0xa2:
-                // not
-                std::cout << "not filter" << std::endl;
-                // TODO
-
-                break;
-
-            case 0xa1:
-                // or
-                std::cout << "or filter" << std::endl;
-                // TODO
-
-                break;
-
-            case 0xa0:
-                // and
-                std::cout << "and filter" << std::endl;
-                // TODO
-
-                break;
-
-            default:
-                return; // error in search request
-                break;
+            filter.push_back(bs.readByte());
+            char lenght = bs.readByte();    // lenght of filter
+            filter.push_back(lenght);
+            // moving filter to vector
+            for (int i = 0; i < static_cast<int>(static_cast<unsigned char>(lenght)); i++) {
+                filter.push_back(bs.readByte());
             }
+
+            // parsing attributes
+            
+            if (bs.readByte() != 0x30) return; // error in search request
+
+            char attributesLenght = bs.readByte();
+            if (attributesLenght == 0x00){
+                attributes.push_back(UID);
+                attributes.push_back(CN);
+                attributes.push_back(MAIL);
+            } 
+
+            bs.readByte(); // skip first 0x04
+
+            std::vector<char> attributesBuffer;
+            for (int i = 0; i < attributesLenght; i++){
+                attributesBuffer.push_back(bs.readByte());
+            }
+
+            //TODO extract attributes from buffer
+
 
             // sends search result done
             response = {0x00, 0x04, 0x00, 0x04, 0x00, 0x01, 0x0a};
@@ -245,8 +198,9 @@ void parsePacket(ByteStream bs, int clientSocket)
             sendPacketLDAP(response, clientSocket, bs.getMessageID());
 
             break;
+        }
 
-        case 0x42:
+        case 0x42: {
             // unbind request
 
             std::cout << "unbind request, BYE" << std::endl;
@@ -257,10 +211,12 @@ void parsePacket(ByteStream bs, int clientSocket)
             }
 
             break;
+        }
 
-        default:
+        default: {
             // send error message not supported operation
             return;
+        }
     }
 
     return;

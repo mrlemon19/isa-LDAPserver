@@ -12,8 +12,10 @@
 #include <arpa/inet.h>
 #include <vector>
 #include <algorithm>
+#include <iomanip>
 
 #include "byteStream.h"
+#include "searchTree.h"
 
 void sendPacketLDAP(std::vector<char> response, int clientSocket, int messageID);
 void parsePacket(ByteStream bs, int clientSocket);
