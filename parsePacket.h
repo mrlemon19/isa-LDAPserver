@@ -15,6 +15,7 @@
 
 #include "byteStream.h"
 
+void sendPacketLDAP(std::vector<char> response, int clientSocket, int messageID);
 void parsePacket(ByteStream bs, int clientSocket);
 
 #endif // PARSE_PACKET_H
