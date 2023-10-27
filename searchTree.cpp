@@ -25,6 +25,7 @@ searchNode::searchNode(std::vector<unsigned char> filter)
 
     // parse filter
     unsigned char filterType = this->readChar();
+    this->readChar();   // skip lenght
 
     switch (filterType){
 
@@ -47,7 +48,6 @@ searchNode::searchNode(std::vector<unsigned char> filter)
             this->filterType = EQL;
 
             // parse attribute type
-            this->readChar();   // skip lenght
 
             if (this->readChar() != 0x04){
                 std::cout << "Invalid attribute type" << std::endl;
