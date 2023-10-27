@@ -21,6 +21,7 @@ searchNode::searchNode(std::vector<unsigned char> filter)
 
     this->filter = filter;
     this->filterIndex = 0;
+    this->filterLenght = filter.size();
 
     // parse filter
     unsigned char filterType = this->readChar();
@@ -44,6 +45,47 @@ searchNode::searchNode(std::vector<unsigned char> filter)
 
         case 0xa3:{
             this->filterType = EQL;
+
+            // parse attribute type
+            this->readChar();   // skip lenght
+
+            if (this->readChar() != 0x04){
+                std::cout << "Invalid attribute type" << std::endl;
+                break;
+            }
+
+            int lenght = this->readChar();
+            std::string attributeType;
+
+            for (int i = 0; i < lenght; i++){
+                attributeType += this->readChar();
+            }
+
+            if (attributeType == "uid"){
+                this->attributeType = UID;
+            }
+            else if (attributeType == "cn"){
+                this->attributeType = CN;
+            }
+            else if (attributeType == "mail"){
+                this->attributeType = MAIL;
+            }
+            else{
+                std::cout << "Invalid attribute type" << std::endl;
+                break;
+            }
+
+            // parse attribute value
+            if (this->readChar() != 0x04){
+                std::cout << "Invalid attribute value" << std::endl;
+                break;
+            }
+
+            lenght = this->readChar();
+            for (int i = 0; i < lenght; i++){
+                this->preStr += this->readChar();
+            }
+
             break;
         }
 
