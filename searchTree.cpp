@@ -61,19 +61,7 @@ searchNode::searchNode(std::vector<unsigned char> filter)
                 attributeType += this->readChar();
             }
 
-            if (attributeType == "uid"){
-                this->attributeType = UID;
-            }
-            else if (attributeType == "cn"){
-                this->attributeType = CN;
-            }
-            else if (attributeType == "mail"){
-                this->attributeType = MAIL;
-            }
-            else{
-                std::cout << "Invalid attribute type" << std::endl;
-                break;
-            }
+            this->attributeType = this->getAttributeType(attributeType);
 
             // parse attribute value
             if (this->readChar() != 0x04){
@@ -91,6 +79,68 @@ searchNode::searchNode(std::vector<unsigned char> filter)
 
         case 0xa4:{
             this->filterType = SUB;
+
+            // parse attribute type
+
+            if (this->readChar() != 0x04){
+                std::cout << "Invalid attribute type" << std::endl;
+                break;
+            }
+
+            int lenght = this->readChar();
+            std::string attributeType;
+
+            for (int i = 0; i < lenght; i++){
+                attributeType += this->readChar();
+            }
+
+            this->attributeType = this->getAttributeType(attributeType);
+
+            // parse attribute value
+
+            if (this->readChar() != 0x30){
+                std::cout << "Invalid attribute value" << std::endl;
+                break;
+            }
+
+            this->readChar();   // skip lenght
+
+            unsigned char subFilterType = this->readChar();
+
+            if (subFilterType == 0x81){
+                std::cout << "now parsing prefix" << std::endl;
+                // loding prefix substring if there is one
+                lenght = this->readChar();
+                for (int i = 0; i < lenght; i++){
+                    this->preStr += this->readChar();
+                }
+                subFilterType = this->readChar();
+            }
+            
+            while (subFilterType == 0x81)
+            {
+                std::cout << "now parsing prefix" << std::endl;
+                // loads sub strings while there are sone
+                lenght = this->readChar();
+                std::string subStr;
+                for (int i = 0; i < lenght; i++){
+                    subStr += this->readChar();
+                }
+
+                this->subStrings.push_back(subStr);
+                subFilterType = this->readChar();
+            }
+            
+            if (subFilterType == 0x82){
+                std::cout << "now parsing prefix" << std::endl;
+                // loading postfix substring if there is one
+                lenght = this->readChar();
+                for (int i = 0; i < lenght; i++){
+                    this->postStr += this->readChar();
+                }
+            }
+
+
             break;
         }
 
@@ -102,7 +152,11 @@ searchNode::searchNode(std::vector<unsigned char> filter)
     }
 
     std::cout << "filter " << this->filterType << " initialized" << std::endl;
-
+    std::string substrings;
+    for (std::string subStr : this->subStrings){
+        substrings += subStr + "*";
+    }
+    std::cout << "filter: " << this->preStr << "*" << substrings << this->postStr << std::endl;
 }
 
 unsigned char searchNode::readChar()
@@ -112,7 +166,7 @@ unsigned char searchNode::readChar()
 
 }
 
-attributeType_t getAttributeType(std::string attributeType)
+attributeType_t searchNode::getAttributeType(std::string attributeType)
 {
 
     if (attributeType == "uid"){
