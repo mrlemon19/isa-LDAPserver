@@ -111,3 +111,22 @@ unsigned char searchNode::readChar()
     return this->filter[this->filterIndex++];
 
 }
+
+attributeType_t getAttributeType(std::string attributeType)
+{
+
+    if (attributeType == "uid"){
+        return UID;
+    }
+    else if (attributeType == "cn"){
+        return CN;
+    }
+    else if (attributeType == "mail"){
+        return MAIL;
+    }
+    else{
+        std::cout << "Invalid attribute type" << std::endl;
+        return UID;
+    }
+
+}

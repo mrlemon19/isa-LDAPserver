@@ -41,6 +41,7 @@ public:
     searchNode();
     searchNode(std::vector<unsigned char> filter);
     unsigned char readChar();
+    attributeType_t getAttributeType(std::string attributeType);
 
     std::vector<unsigned char> filter;
     int filterIndex;
