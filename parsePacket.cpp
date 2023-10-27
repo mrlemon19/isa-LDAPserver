@@ -154,13 +154,13 @@ void parsePacket(ByteStream bs, int clientSocket)
             // parsing filter
 
             
-            std::vector<char> filter;
+            std::vector<unsigned char> filter;
             std::vector<attributeType_t> attributes;
 
             // TODO catch when there is no filter or attributes
 
             filter.push_back(bs.readByte());
-            char lenght = bs.readByte();    // lenght of filter
+            unsigned char lenght = bs.readByte();    // lenght of filter
             filter.push_back(lenght);
             // moving filter to vector
             for (int i = 0; i < static_cast<int>(static_cast<unsigned char>(lenght)); i++) {
@@ -171,19 +171,19 @@ void parsePacket(ByteStream bs, int clientSocket)
             
             if (bs.readByte() != 0x30) return; // error in search request
 
-            char attributesLenght = bs.readByte();
-            if (attributesLenght == 0x00){
-                attributes.push_back(UID);
-                attributes.push_back(CN);
-                attributes.push_back(MAIL);
-            } 
+            //char attributesLenght = bs.readByte();
+            //if (attributesLenght == 0x00){
+            //    attributes.push_back(UID);
+            //    attributes.push_back(CN);
+            //    attributes.push_back(MAIL);
+            //}
 
-            bs.readByte(); // skip first 0x04
+            attributes.push_back(UID);
+            attributes.push_back(CN);
+            attributes.push_back(MAIL);
 
-            std::vector<char> attributesBuffer;
-            for (int i = 0; i < attributesLenght; i++){
-                attributesBuffer.push_back(bs.readByte());
-            }
+            searchTree filterTree = searchTree(filter, attributes);
+
 
             //TODO extract attributes from buffer
 

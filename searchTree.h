@@ -23,11 +23,13 @@ enum attributeType_t{
     MAIL
 };
 
+class searchNode;
+
 class searchTree
 {
 public:
     searchTree();
-    searchTree(std::vector<char> filter, std::vector<attributeType_t> attributes);
+    searchTree(std::vector<unsigned char> filter, std::vector<attributeType_t> attributes);
 
     searchNode* root;
     std::vector<attributeType_t> attributes;
@@ -37,9 +39,11 @@ class searchNode
 {
 public:
     searchNode();
-    searchNode(std::vector<char> filter);
+    searchNode(std::vector<unsigned char> filter);
+    unsigned char readChar();
 
-    std::vector<char> attributes;
+    std::vector<unsigned char> filter;
+    int filterIndex;
     std::vector<searchNode> children;
     filterType_t filterType;
 };
