@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <iostream>
+#include <iomanip>
 
 enum filterType_t{
     AND,
@@ -40,8 +41,10 @@ class searchNode
 public:
     searchNode();
     searchNode(std::vector<unsigned char> filter);
+    void parseFilter();
     unsigned char readChar();
     attributeType_t getAttributeType(std::string attributeType);
+    std::vector<std::vector<unsigned char>> separateFilter();
 
     std::vector<unsigned char> filter;
     int filterIndex;

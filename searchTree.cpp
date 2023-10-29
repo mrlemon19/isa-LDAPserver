@@ -19,28 +19,70 @@ searchTree::searchTree(std::vector<unsigned char> filter, std::vector<attributeT
 searchNode::searchNode(std::vector<unsigned char> filter)
 {
 
+    std::cout << "search node is being initialized" << std::endl;
     this->filter = filter;
     this->filterIndex = 0;
-    this->filterLenght = filter.size();
+    this->parseFilter();
+    std::cout << "search node initialized" << std::endl;
+
+}
+
+void searchNode::parseFilter()
+{
 
     // parse filter
     unsigned char filterType = this->readChar();
-    this->readChar();   // skip lenght
+    this->filterLenght = this->readChar();
 
     switch (filterType){
 
         case 0xa0:{
             this->filterType = AND;
+
+            std::cout << "AND filter" << std::endl;
+
+            // sepatares filters from inside AND filter and creates searchNodes from them
+            std::vector<std::vector<unsigned char>> filters = this->separateFilter();
+
+            for (std::vector<unsigned char> filter : filters){
+                searchNode node = searchNode(filter);
+                this->children.push_back(node);
+            }
+
             break;
         }
 
         case 0xa1:{
             this->filterType = OR;
+
+            std::cout << "OR filter" << std::endl;
+
+            // sepatares filters from inside OR filter and creates searchNodes from them
+            std::vector<std::vector<unsigned char>> filters = this->separateFilter();
+
+            for (std::vector<unsigned char> filter : filters){
+                searchNode node = searchNode(filter);
+                this->children.push_back(node);
+            }
+
             break;
         }
 
         case 0xa2:{
             this->filterType = NOT;
+
+            std::cout << "NOT filter" << std::endl;
+
+            std::vector<unsigned char> innerFilter;
+
+            // copy filter characters into vector
+            for (int i = 0; i < this->filterLenght; i++){
+                innerFilter.push_back(this->readChar());
+            }
+
+            // create searchNode from inner filter
+            searchNode node = searchNode(innerFilter);
+
             break;
         }
 
@@ -48,6 +90,8 @@ searchNode::searchNode(std::vector<unsigned char> filter)
             this->filterType = EQL;
 
             // parse attribute type
+
+            std::cout << "EQL filter" << std::endl;
 
             if (this->readChar() != 0x04){
                 std::cout << "Invalid attribute type" << std::endl;
@@ -82,6 +126,8 @@ searchNode::searchNode(std::vector<unsigned char> filter)
 
             // parse attribute type
 
+            std::cout << "SUB filter" << std::endl;
+
             if (this->readChar() != 0x04){
                 std::cout << "Invalid attribute type" << std::endl;
                 break;
@@ -108,7 +154,6 @@ searchNode::searchNode(std::vector<unsigned char> filter)
             unsigned char subFilterType = this->readChar();
 
             if (subFilterType == 0x80){
-                std::cout << "now parsing prefix" << std::endl;
                 // loding prefix substring if there is one
                 lenght = this->readChar();
                 for (int i = 0; i < lenght; i++){
@@ -119,7 +164,6 @@ searchNode::searchNode(std::vector<unsigned char> filter)
             
             while (subFilterType == 0x81)
             {
-                std::cout << "now parsing prefix" << std::endl;
                 // loads sub strings while there are sone
                 lenght = this->readChar();
                 std::string subStr;
@@ -132,7 +176,6 @@ searchNode::searchNode(std::vector<unsigned char> filter)
             }
             
             if (subFilterType == 0x82){
-                std::cout << "now parsing prefix" << std::endl;
                 // loading postfix substring if there is one
                 lenght = this->readChar();
                 for (int i = 0; i < lenght; i++){
@@ -152,11 +195,7 @@ searchNode::searchNode(std::vector<unsigned char> filter)
     }
 
     std::cout << "filter " << this->filterType << " initialized" << std::endl;
-    std::string substrings;
-    for (std::string subStr : this->subStrings){
-        substrings += subStr + "*";
-    }
-    std::cout << "filter: " << this->preStr << "*" << substrings << this->postStr << std::endl;
+
 }
 
 unsigned char searchNode::readChar()
@@ -182,5 +221,41 @@ attributeType_t searchNode::getAttributeType(std::string attributeType)
         std::cout << "Invalid attribute type" << std::endl;
         return UID;
     }
+
+}
+
+std::vector<std::vector<unsigned char>> searchNode::separateFilter()
+{
+
+    std::vector<std::vector<unsigned char>> filters;
+    
+    //this->readChar();   // skip filter type
+    //this->readChar();   // skip filter lenght
+
+    unsigned char filterType = this->readChar();
+
+    while (this->filterIndex < this->filterLenght){
+
+        if (filterType == 0xa0 || filterType == 0xa1 || filterType == 0xa2 || filterType == 0xa3 || filterType == 0xa4){
+            // filter starts
+            int lenght = this->readChar();
+            std::vector<unsigned char> filter;
+
+            std::cout << "separating filter " << this->filterType << std::endl;
+
+            // copy filter characters into vector
+            filter.push_back(filterType);
+            filter.push_back(lenght);
+            for (int i = 0; i < lenght; i++){
+                filter.push_back(this->readChar());
+            }
+
+            // push filter into vector
+            filters.push_back(filter);
+            filterType = this->readChar();
+        }
+    }
+
+    return filters;
 
 }
