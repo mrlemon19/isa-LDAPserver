@@ -107,7 +107,7 @@ searchNode::searchNode(std::vector<unsigned char> filter)
 
             unsigned char subFilterType = this->readChar();
 
-            if (subFilterType == 0x81){
+            if (subFilterType == 0x80){
                 std::cout << "now parsing prefix" << std::endl;
                 // loding prefix substring if there is one
                 lenght = this->readChar();
