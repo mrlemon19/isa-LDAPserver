@@ -30,10 +30,12 @@ class searchTree
 {
 public:
     searchTree();
-    searchTree(std::vector<unsigned char> filter, std::vector<attributeType_t> attributes);
+    searchTree(std::vector<unsigned char> filter, std::vector<attributeType_t> attributes, int messageID, int clientSocket);
 
     searchNode* root;
     std::vector<attributeType_t> attributes;
+    int messageID;
+    int clientSocket;
 };
 
 class searchNode

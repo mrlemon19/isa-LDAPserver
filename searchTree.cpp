@@ -5,13 +5,15 @@
 
 #include "searchTree.h"
 
-searchTree::searchTree(std::vector<unsigned char> filter, std::vector<attributeType_t> attributes)
+searchTree::searchTree(std::vector<unsigned char> filter, std::vector<attributeType_t> attributes, int messageID, int clientSocket)
 {
 
     std::cout << "searchTree is being initialized" << std::endl;
     searchNode node = searchNode(filter);
     this->root = &node;
     this->attributes = attributes;
+    this->messageID = messageID;
+    this->clientSocket = clientSocket;
     std::cout << "searchTree initialized" << std::endl;
 
 }

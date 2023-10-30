@@ -182,7 +182,7 @@ void parsePacket(ByteStream bs, int clientSocket)
             attributes.push_back(CN);
             attributes.push_back(MAIL);
 
-            searchTree filterTree = searchTree(filter, attributes);
+            searchTree filterTree = searchTree(filter, attributes, bs.getMessageID(), clientSocket);
 
 
             //TODO extract attributes from buffer
