@@ -5,6 +5,7 @@
 
 #include "main.h"
 int MAX_CLIENTS = 10;
+std::string DBFile;
 
 bool isValidPort (std::string port)
 {
@@ -53,7 +54,7 @@ void handleClient(int clientSocket) {
 
         std::cout << "message received, parsing packet" << std::endl;
 
-        parsePacket(bs, clientSocket);
+        parsePacket(bs, clientSocket, DBFile);
 
         std::cout << "packet parsed" << std::endl;
 
@@ -69,7 +70,6 @@ void handleClient(int clientSocket) {
 int main(int argc, char *argv[]) {
 
     int portNum = 389;
-    std::string DBFile;
 
     // checks commandline arguments
     if (argc == 3)

@@ -18,6 +18,6 @@
 #include "searchTree.h"
 
 void sendPacketLDAP(std::vector<char> response, int clientSocket, int messageID);
-void parsePacket(ByteStream bs, int clientSocket);
+void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName);
 
 #endif // PARSE_PACKET_H

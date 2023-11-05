@@ -30,7 +30,7 @@ void sendPacketLDAP(std::vector<char> response, int clientSocket, int messageID)
     return;
 }
 
-void parsePacket(ByteStream bs, int clientSocket)
+void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 {
 
     if (bs.readByte() != 0x30){
@@ -182,7 +182,7 @@ void parsePacket(ByteStream bs, int clientSocket)
             attributes.push_back(CN);
             attributes.push_back(MAIL);
 
-            searchTree filterTree = searchTree(filter, attributes, bs.getMessageID(), clientSocket);
+            searchTree filterTree = searchTree(filter, attributes, bs.getMessageID(), clientSocket, DBfileName);
 
 
             //TODO extract attributes from buffer
