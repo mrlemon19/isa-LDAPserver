@@ -183,6 +183,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
             attributes.push_back(MAIL);
 
             searchTree filterTree = searchTree(filter, attributes, bs.getMessageID(), clientSocket, DBfileName);
+            filterTree.search();
 
 
             //TODO extract attributes from buffer

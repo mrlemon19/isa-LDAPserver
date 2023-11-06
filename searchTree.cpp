@@ -5,7 +5,7 @@
 
 #include "searchTree.h"
 
-searchTree::searchTree(std::vector<unsigned char> filter, std::vector<attributeType_t> attributes, int messageID, int clientSocket)
+searchTree::searchTree(std::vector<unsigned char> filter, std::vector<attributeType_t> attributes, int messageID, int clientSocket, std::string DBfileName)
 {
 
     std::cout << "searchTree is being initialized" << std::endl;
@@ -14,7 +14,47 @@ searchTree::searchTree(std::vector<unsigned char> filter, std::vector<attributeT
     this->attributes = attributes;
     this->messageID = messageID;
     this->clientSocket = clientSocket;
+    this->maxResEnt = 100;
+    this->DBfileName = DBfileName;
     std::cout << "searchTree initialized" << std::endl;
+
+}
+
+void searchTree::search()
+{
+
+    std::cout << "searchTree is being searched" << std::endl;
+
+    // open DB file
+    std::ifstream DBStream(this->DBfileName);
+
+    // check if DB file is open
+    if (!DBStream.is_open()){
+        std::cout << "DB file could not be opened" << std::endl;
+        return;
+    }
+
+    // read DB file line by line
+    std::string line;
+    while (std::getline(DBStream, line)){
+
+        // parse line
+        ResultEntry entry = ResultEntry(line);
+
+        std::cout << "name: " << entry.name << std::endl;
+        std::cout << "uid: " << entry.uid << std::endl;
+        std::cout << "mail: " << entry.mail << std::endl;
+
+        // check if entry matches filter
+        //if (this->root->evaluate(entry)){
+        //    std::cout << "match found" << std::endl;
+        //    std::cout << "name: " << entry.name << std::endl;
+        //    std::cout << "uid: " << entry.uid << std::endl;
+        //    std::cout << "mail: " << entry.mail << std::endl;
+        //    // TODO create vector of the entry and send it
+        //}
+
+    }
 
 }
 
@@ -259,5 +299,18 @@ std::vector<std::vector<unsigned char>> searchNode::separateFilter()
     }
 
     return filters;
+
+}
+
+ResultEntry::ResultEntry(std::string entry)
+{
+
+    // parse entry
+    size_t firstSemicolon = entry.find(';');
+    size_t secondSemicolon = entry.find(';', firstSemicolon + 1);
+
+    this->name = entry.substr(0, firstSemicolon);
+    this->uid = entry.substr(firstSemicolon + 1, secondSemicolon - firstSemicolon - 1);
+    this->mail = entry.substr(secondSemicolon + 1);
 
 }
