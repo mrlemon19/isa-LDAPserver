@@ -40,18 +40,17 @@ void searchTree::search()
         // parse line
         ResultEntry entry = ResultEntry(line);
 
-        std::cout << "name: " << entry.name << std::endl;
-        std::cout << "uid: " << entry.uid << std::endl;
-        std::cout << "mail: " << entry.mail << std::endl;
-
         // check if entry matches filter
-        //if (this->root->evaluate(entry)){
-        //    std::cout << "match found" << std::endl;
-        //    std::cout << "name: " << entry.name << std::endl;
-        //    std::cout << "uid: " << entry.uid << std::endl;
-        //    std::cout << "mail: " << entry.mail << std::endl;
-        //    // TODO create vector of the entry and send it
-        //}
+        if (this->root->evaluate(entry)){
+
+            std::cout << "match found" << std::endl;
+            std::cout << "name: " << entry.name << std::endl;
+            std::cout << "uid: " << entry.uid << std::endl;
+            std::cout << "mail: " << entry.mail << std::endl;
+
+            // TODO create vector of the entry and send it
+        
+        }
 
     }
 
@@ -236,6 +235,43 @@ void searchNode::parseFilter()
     }
 
     std::cout << "filter " << this->filterType << " initialized" << std::endl;
+
+}
+
+bool searchNode::evaluate(ResultEntry entry)
+{   
+
+    std::cout << "evaluating filter " << this->filterType << std::endl;
+
+    if (this->filterType == EQL){
+        // equalityMatch
+
+        std::cout << "evaluating " << this->preStr << "and " << entry.uid << std::endl;
+
+        switch (this->attributeType){
+            case UID:{
+                if (entry.uid == this->preStr){
+                    return true;
+                }
+                break;
+            }
+            case CN:{
+                if (entry.name == this->preStr){
+                    return true;
+                }
+                break;
+            }
+            case MAIL:{
+                if (entry.mail == this->preStr){
+                    return true;
+                }
+                break;
+            }
+        }
+
+    }
+
+    return false;
 
 }
 
