@@ -8,21 +8,17 @@
 searchTree::searchTree(std::vector<unsigned char> filter, std::vector<unsigned char> attributes, int messageID, int clientSocket, std::string DBfileName)
 {
 
-    std::cout << "searchTree is being initialized" << std::endl;
     this->root = new searchNode(filter);
     this->attributes = parseAttributes(attributes);
     this->messageID = messageID;
     this->clientSocket = clientSocket;
     this->maxResEnt = 100;
     this->DBfileName = DBfileName;
-    std::cout << "searchTree initialized" << std::endl;
 
 }
 
 void searchTree::search()
 {
-
-    std::cout << "searchTree is being searched" << std::endl;
 
     // open DB file
     std::ifstream DBStream(this->DBfileName);
@@ -58,9 +54,6 @@ void searchTree::search()
 
 std::vector<attributeType_t> searchTree::parseAttributes(std::vector<unsigned char> attributes)
 {
-
-    std::cout << "searchTree is parsing attributes" << std::endl;
-
     // parse attributes
     std::vector<attributeType_t> parsedAttributes;
     size_t lenght = attributes.size();
@@ -110,11 +103,9 @@ std::vector<attributeType_t> searchTree::parseAttributes(std::vector<unsigned ch
 searchNode::searchNode(std::vector<unsigned char> filter)
 {
 
-    std::cout << "search node is being initialized" << std::endl;
     this->filter = filter;
     this->filterIndex = 0;
     this->parseFilter();
-    std::cout << "search node initialized" << std::endl;
 
 }
 
@@ -130,8 +121,6 @@ void searchNode::parseFilter()
         case 0xa0:{
             this->filterType = AND;
 
-            std::cout << "AND filter" << std::endl;
-
             // sepatares filters from inside AND filter and creates searchNodes from them
             std::vector<std::vector<unsigned char>> filters = this->separateFilter();
 
@@ -146,8 +135,6 @@ void searchNode::parseFilter()
         case 0xa1:{
             this->filterType = OR;
 
-            std::cout << "OR filter" << std::endl;
-
             // sepatares filters from inside OR filter and creates searchNodes from them
             std::vector<std::vector<unsigned char>> filters = this->separateFilter();
 
@@ -161,8 +148,6 @@ void searchNode::parseFilter()
 
         case 0xa2:{
             this->filterType = NOT;
-
-            std::cout << "NOT filter" << std::endl;
 
             std::vector<unsigned char> innerFilter;
 
@@ -182,8 +167,6 @@ void searchNode::parseFilter()
             this->filterType = EQL;
 
             // parse attribute type
-
-            std::cout << "EQL filter" << std::endl;
 
             if (this->readChar() != 0x04){
                 std::cout << "Invalid attribute type" << std::endl;
@@ -217,8 +200,6 @@ void searchNode::parseFilter()
             this->filterType = SUB;
 
             // parse attribute type
-
-            std::cout << "SUB filter" << std::endl;
 
             if (this->readChar() != 0x04){
                 std::cout << "Invalid attribute type" << std::endl;
@@ -300,11 +281,7 @@ void searchNode::parseFilter()
             std::cout << "Invalid filter type" << std::endl;
             break;
         }
-
     }
-
-    std::cout << "filter " << this->filterType << " initialized" << std::endl;
-
 }
 
 bool searchNode::evaluate(ResultEntry* entry)
@@ -313,8 +290,6 @@ bool searchNode::evaluate(ResultEntry* entry)
 
     if (this->filterType == EQL){
         // equalityMatch
-
-        std::cout << "evaluating " << this->regexPattern << "and " << entry->uid << std::endl;
 
         switch (this->attributeType){
             case UID:{
@@ -341,8 +316,6 @@ bool searchNode::evaluate(ResultEntry* entry)
     else if (this->filterType == SUB){
         // substring
 
-        std::cout << "evaluating " << this->regexPattern << " and " << entry->uid << std::endl;
-
         switch (this->attributeType){
             case UID:{
                 return std::regex_search(entry->uid, std::regex(this->regexPattern));
@@ -368,8 +341,6 @@ bool searchNode::evaluate(ResultEntry* entry)
     else if (this->filterType == AND){
         // and
 
-        std::cout << "evaluating AND filter" << std::endl;
-
         for (searchNode* node : this->children){
             // if any of the children returns false, return false else return true
             if (!node->evaluate(entry)){
@@ -384,8 +355,6 @@ bool searchNode::evaluate(ResultEntry* entry)
     else if (this->filterType == OR){
         // or
 
-        std::cout << "evaluating OR filter" << std::endl;
-
         for (searchNode* node : this->children){
             // if any of the children returns true, return true else return false
             if (node->evaluate(entry)){
@@ -399,8 +368,6 @@ bool searchNode::evaluate(ResultEntry* entry)
 
     else if (this->filterType == NOT){
         // not
-
-        std::cout << "evaluating NOT filter" << std::endl;
 
         return !this->children[0]->evaluate(entry);
 
@@ -457,8 +424,6 @@ std::vector<std::vector<unsigned char>> searchNode::separateFilter()
             // filter starts
             int lenght = this->readChar();
             std::vector<unsigned char> filter;
-
-            std::cout << "separating filter " << this->filterType << std::endl;
 
             // copy filter characters into vector
             filter.push_back(filterType);

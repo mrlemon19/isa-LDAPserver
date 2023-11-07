@@ -150,7 +150,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
             bs.readByte(); // skip types only
 
-            std::cout << "now parsing filter" << std::endl;
             // parsing filter
 
             
