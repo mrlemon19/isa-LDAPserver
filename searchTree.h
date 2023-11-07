@@ -70,7 +70,7 @@ public:
     std::vector<unsigned char> filter;
     int filterIndex;
     int filterLenght;
-    std::vector<searchNode> children;
+    std::vector<searchNode*> children;
     filterType_t filterType;
 
     // for eql or sub filter

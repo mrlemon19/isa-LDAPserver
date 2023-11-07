@@ -85,7 +85,7 @@ void searchNode::parseFilter()
             std::vector<std::vector<unsigned char>> filters = this->separateFilter();
 
             for (std::vector<unsigned char> filter : filters){
-                searchNode node = searchNode(filter);
+                searchNode* node = new searchNode(filter);
                 this->children.push_back(node);
             }
 
@@ -101,7 +101,7 @@ void searchNode::parseFilter()
             std::vector<std::vector<unsigned char>> filters = this->separateFilter();
 
             for (std::vector<unsigned char> filter : filters){
-                searchNode node = searchNode(filter);
+                searchNode* node = new searchNode(filter);
                 this->children.push_back(node);
             }
 
@@ -259,7 +259,6 @@ void searchNode::parseFilter()
 bool searchNode::evaluate(ResultEntry* entry)
 {   
 
-    std::cout << "evaluating filter " << this->filterType << std::endl;
 
     if (this->filterType == EQL){
         // equalityMatch
@@ -320,9 +319,9 @@ bool searchNode::evaluate(ResultEntry* entry)
 
         std::cout << "evaluating AND filter" << std::endl;
 
-        for (searchNode node : this->children){
+        for (searchNode* node : this->children){
             // if any of the children returns false, return false else return true
-            if (!node.evaluate(entry)){
+            if (!node->evaluate(entry)){
                 return false;
             }
         }
@@ -336,9 +335,9 @@ bool searchNode::evaluate(ResultEntry* entry)
 
         std::cout << "evaluating OR filter" << std::endl;
 
-        for (searchNode node : this->children){
+        for (searchNode* node : this->children){
             // if any of the children returns true, return true else return false
-            if (node.evaluate(entry)){
+            if (node->evaluate(entry)){
                 return true;
             }
         }
@@ -352,7 +351,7 @@ bool searchNode::evaluate(ResultEntry* entry)
 
         std::cout << "evaluating NOT filter" << std::endl;
 
-        return !this->children[0].evaluate(entry);
+        return !this->children[0]->evaluate(entry);
 
     }
 
