@@ -5,12 +5,12 @@
 
 #include "searchTree.h"
 
-searchTree::searchTree(std::vector<unsigned char> filter, std::vector<attributeType_t> attributes, int messageID, int clientSocket, std::string DBfileName)
+searchTree::searchTree(std::vector<unsigned char> filter, std::vector<unsigned char> attributes, int messageID, int clientSocket, std::string DBfileName)
 {
 
     std::cout << "searchTree is being initialized" << std::endl;
     this->root = new searchNode(filter);
-    this->attributes = attributes;
+    this->attributes = parseAttributes(attributes);
     this->messageID = messageID;
     this->clientSocket = clientSocket;
     this->maxResEnt = 100;
@@ -53,6 +53,57 @@ void searchTree::search()
         }
 
     }
+
+}
+
+std::vector<attributeType_t> searchTree::parseAttributes(std::vector<unsigned char> attributes)
+{
+
+    std::cout << "searchTree is parsing attributes" << std::endl;
+
+    // parse attributes
+    std::vector<attributeType_t> parsedAttributes;
+    size_t lenght = attributes.size();
+    size_t i = 0;
+
+    while (i < lenght){
+
+        std::string attribute;
+        
+        if (attributes[i] == 0x04){
+            // attribute type is specified
+            i++;
+            int attributeLenght = attributes[i];
+            i++;
+            for (int j = 0; j < attributeLenght; j++){
+                attribute += attributes[i];
+                i++;
+            }
+        }
+
+        else{
+            // no attributes specified, return default attributes
+            parsedAttributes.push_back(UID);
+            parsedAttributes.push_back(CN);
+            parsedAttributes.push_back(MAIL);
+        }
+
+        if (attribute == "uid"){
+            parsedAttributes.push_back(UID);
+        }
+        else if (attribute == "cn"){
+            parsedAttributes.push_back(CN);
+        }
+        else if (attribute == "mail"){
+            parsedAttributes.push_back(MAIL);
+        }
+        else{
+            std::cout << "Invalid attribute type" << std::endl;
+            return std::vector<attributeType_t> {UID, CN, MAIL};
+        }
+    }
+
+    return parsedAttributes;
 
 }
 

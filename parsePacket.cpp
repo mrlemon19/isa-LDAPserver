@@ -155,7 +155,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
             
             std::vector<unsigned char> filter;
-            std::vector<attributeType_t> attributes;
+            std::vector<unsigned char> attributes;
 
             // TODO catch when there is no filter or attributes
 
@@ -171,23 +171,14 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
             
             if (bs.readByte() != 0x30) return; // error in search request
 
-            //char attributesLenght = bs.readByte();
-            //if (attributesLenght == 0x00){
-            //    attributes.push_back(UID);
-            //    attributes.push_back(CN);
-            //    attributes.push_back(MAIL);
-            //}
+            int attributesLenght = bs.readByte(); // lenght of attributes
 
-            attributes.push_back(UID);
-            attributes.push_back(CN);
-            attributes.push_back(MAIL);
+            for (int i = 0; i < attributesLenght; i++) {
+                attributes.push_back(bs.readByte());
+            }
 
             searchTree filterTree = searchTree(filter, attributes, bs.getMessageID(), clientSocket, DBfileName);
             filterTree.search();
-
-
-            //TODO extract attributes from buffer
-
 
             // sends search result done
             response = {0x00, 0x04, 0x00, 0x04, 0x00, 0x01, 0x0a};
