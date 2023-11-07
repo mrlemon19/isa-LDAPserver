@@ -61,7 +61,7 @@ public:
     searchNode();
     searchNode(std::vector<unsigned char> filter);
     void parseFilter();
-    bool evaluate(ResultEntry entry);
+    bool evaluate(ResultEntry* entry);
     unsigned char readChar();
     attributeType_t getAttributeType(std::string attributeType);
     std::vector<std::vector<unsigned char>> separateFilter();
