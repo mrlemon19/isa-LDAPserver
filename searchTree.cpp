@@ -9,8 +9,7 @@ searchTree::searchTree(std::vector<unsigned char> filter, std::vector<attributeT
 {
 
     std::cout << "searchTree is being initialized" << std::endl;
-    searchNode node = searchNode(filter);
-    this->root = &node;
+    this->root = new searchNode(filter);
     this->attributes = attributes;
     this->messageID = messageID;
     this->clientSocket = clientSocket;
