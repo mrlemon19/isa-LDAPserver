@@ -121,7 +121,8 @@ void searchNode::parseFilter()
             }
 
             // create searchNode from inner filter
-            searchNode node = searchNode(innerFilter);
+            searchNode* node = new searchNode(innerFilter);
+            this->children.push_back(node);
 
             break;
         }
