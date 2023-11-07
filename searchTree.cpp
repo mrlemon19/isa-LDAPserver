@@ -314,6 +314,52 @@ bool searchNode::evaluate(ResultEntry* entry)
 
     }
 
+    else if (this->filterType == AND){
+        // and
+
+        std::cout << "evaluating AND filter" << std::endl;
+
+        for (searchNode node : this->children){
+            // if any of the children returns false, return false else return true
+            if (!node.evaluate(entry)){
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    else if (this->filterType == OR){
+        // or
+
+        std::cout << "evaluating OR filter" << std::endl;
+
+        for (searchNode node : this->children){
+            // if any of the children returns true, return true else return false
+            if (node.evaluate(entry)){
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
+    else if (this->filterType == NOT){
+        // not
+
+        std::cout << "evaluating NOT filter" << std::endl;
+
+        return !this->children[0].evaluate(entry);
+
+    }
+
+    else{
+        std::cout << "Invalid filter type" << std::endl;
+        return false;
+    }
+
     return false;
 
 }
