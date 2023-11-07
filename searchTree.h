@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <string>
 #include <fstream>
+#include <regex>
 
 enum filterType_t{
     AND,
@@ -73,9 +74,7 @@ public:
     filterType_t filterType;
 
     // for eql or sub filter
-    std::string preStr;
-    std::string postStr;
-    std::vector<std::string> subStrings;
+    std::string regexPattern;
     attributeType_t attributeType;
 };
 

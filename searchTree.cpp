@@ -155,7 +155,7 @@ void searchNode::parseFilter()
 
             lenght = this->readChar();
             for (int i = 0; i < lenght; i++){
-                this->preStr += this->readChar();
+                this->regexPattern += this->readChar();
             }
 
             break;
@@ -193,11 +193,16 @@ void searchNode::parseFilter()
 
             unsigned char subFilterType = this->readChar();
 
+            std::string preStr;
+            std::vector<std::string> subStrings;
+            std::string postStr;
+
             if (subFilterType == 0x80){
                 // loding prefix substring if there is one
                 lenght = this->readChar();
+                preStr = "^";
                 for (int i = 0; i < lenght; i++){
-                    this->preStr += this->readChar();
+                    preStr += this->readChar();
                 }
                 subFilterType = this->readChar();
             }
@@ -206,23 +211,35 @@ void searchNode::parseFilter()
             {
                 // loads sub strings while there are sone
                 lenght = this->readChar();
-                std::string subStr;
+                std::string subStr = ".*";
                 for (int i = 0; i < lenght; i++){
                     subStr += this->readChar();
                 }
 
-                this->subStrings.push_back(subStr);
+                subStrings.push_back(subStr);
                 subFilterType = this->readChar();
             }
             
             if (subFilterType == 0x82){
                 // loading postfix substring if there is one
                 lenght = this->readChar();
+                postStr = ".*";
                 for (int i = 0; i < lenght; i++){
-                    this->postStr += this->readChar();
+                    postStr += this->readChar();
                 }
+                postStr += "$";
             }
 
+            // creating regex pattern
+            std::string pattern = preStr;
+
+            for (std::string subStr : subStrings){
+                pattern += subStr;
+            }
+
+            pattern += postStr;
+
+            this->regexPattern = pattern;
 
             break;
         }
@@ -246,19 +263,46 @@ bool searchNode::evaluate(ResultEntry* entry)
     if (this->filterType == EQL){
         // equalityMatch
 
-        std::cout << "evaluating " << this->preStr << "and " << entry->uid << std::endl;
+        std::cout << "evaluating " << this->regexPattern << "and " << entry->uid << std::endl;
 
         switch (this->attributeType){
             case UID:{
-                return this->preStr == entry->uid;
+                return this->regexPattern == entry->uid;
                 break;
             }
             case CN:{
-                return this->preStr == entry->name;
+                return this->regexPattern == entry->name;
                 break;
             }
             case MAIL:{
-                return this->preStr == entry->mail;
+                return this->regexPattern == entry->mail;
+                break;
+            }
+            default:{
+                std::cout << "Invalid attribute type" << std::endl;
+                return false;
+                break;
+            }
+        }
+
+    }
+
+    else if (this->filterType == SUB){
+        // substring
+
+        std::cout << "evaluating " << this->regexPattern << " and " << entry->uid << std::endl;
+
+        switch (this->attributeType){
+            case UID:{
+                return std::regex_search(entry->uid, std::regex(this->regexPattern));
+                break;
+            }
+            case CN:{
+                return std::regex_search(entry->name, std::regex(this->regexPattern));
+                break;
+            }
+            case MAIL:{
+                return std::regex_search(entry->mail, std::regex(this->regexPattern));
                 break;
             }
             default:{
