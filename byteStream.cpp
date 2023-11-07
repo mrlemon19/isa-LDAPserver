@@ -10,9 +10,15 @@ ByteStream::ByteStream(unsigned char* buffer) {
 }
 
 unsigned char ByteStream::readByte() {
-    unsigned char c = this->buffer[this->currentByte];
-    this->currentByte++;
-    return c;
+
+    if (this->currentByte >= this->lenght) {
+        unsigned char c = this->buffer[this->currentByte];
+        this->currentByte++;
+        return c;
+    }
+    else {
+        return 0xff;
+    }
 }
 
 void ByteStream::printBuffer() {
