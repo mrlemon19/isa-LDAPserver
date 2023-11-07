@@ -41,7 +41,7 @@ void searchTree::search()
         ResultEntry entry = ResultEntry(line);
 
         // check if entry matches filter
-        if (this->root->evaluate(entry)){
+        if (this->root->evaluate(&entry)){
 
             std::cout << "match found" << std::endl;
             std::cout << "name: " << entry.name << std::endl;
@@ -238,7 +238,7 @@ void searchNode::parseFilter()
 
 }
 
-bool searchNode::evaluate(ResultEntry entry)
+bool searchNode::evaluate(ResultEntry* entry)
 {   
 
     std::cout << "evaluating filter " << this->filterType << std::endl;
@@ -246,25 +246,24 @@ bool searchNode::evaluate(ResultEntry entry)
     if (this->filterType == EQL){
         // equalityMatch
 
-        std::cout << "evaluating " << this->preStr << "and " << entry.uid << std::endl;
+        std::cout << "evaluating " << this->preStr << "and " << entry->uid << std::endl;
 
         switch (this->attributeType){
             case UID:{
-                if (entry.uid == this->preStr){
-                    return true;
-                }
+                return this->preStr == entry->uid;
                 break;
             }
             case CN:{
-                if (entry.name == this->preStr){
-                    return true;
-                }
+                return this->preStr == entry->name;
                 break;
             }
             case MAIL:{
-                if (entry.mail == this->preStr){
-                    return true;
-                }
+                return this->preStr == entry->mail;
+                break;
+            }
+            default:{
+                std::cout << "Invalid attribute type" << std::endl;
+                return false;
                 break;
             }
         }
