@@ -13,6 +13,8 @@
 #include <fstream>
 #include <regex>
 
+#include "packetSender.h"
+
 enum filterType_t{
     AND,
     OR,
@@ -45,7 +47,7 @@ class searchTree
 {
 public:
     searchTree();
-    searchTree(std::vector<unsigned char> filter, std::vector<unsigned char> attributes, int messageID, int clientSocket, std::string DBfileName);
+    searchTree(std::vector<unsigned char> filter, std::vector<unsigned char> attributes, int messageID, int clientSocket, std::string DBfileName, packetSender* ps);
     std::vector<attributeType_t> parseAttributes(std::vector<unsigned char> attributes);
     void search();
 
@@ -55,6 +57,7 @@ public:
     int clientSocket;
     int maxResEnt;
     std::string DBfileName;
+    packetSender* ps;
 };
 
 class searchNode

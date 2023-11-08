@@ -5,7 +5,7 @@
 
 #include "searchTree.h"
 
-searchTree::searchTree(std::vector<unsigned char> filter, std::vector<unsigned char> attributes, int messageID, int clientSocket, std::string DBfileName)
+searchTree::searchTree(std::vector<unsigned char> filter, std::vector<unsigned char> attributes, int messageID, int clientSocket, std::string DBfileName, packetSender* ps)
 {
 
     this->root = new searchNode(filter);
@@ -14,6 +14,7 @@ searchTree::searchTree(std::vector<unsigned char> filter, std::vector<unsigned c
     this->clientSocket = clientSocket;
     this->maxResEnt = 100;
     this->DBfileName = DBfileName;
+    this->ps = ps;
 
 }
 

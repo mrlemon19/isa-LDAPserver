@@ -154,7 +154,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
                 attributes.push_back(bs.readByte());
             }
 
-            searchTree filterTree = searchTree(filter, attributes, bs.getMessageID(), clientSocket, DBfileName);
+            searchTree filterTree = searchTree(filter, attributes, bs.getMessageID(), clientSocket, DBfileName, ps);
             filterTree.search();
 
             // sends search result done
