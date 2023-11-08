@@ -33,6 +33,9 @@ void sendPacketLDAP(std::vector<char> response, int clientSocket, int messageID)
 void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 {
 
+    // packet sender init
+    packetSender* ps = new packetSender(clientSocket);
+
     if (bs.readByte() != 0x30){
         return; // not a ldap packet
         std::cout << "0x30 missing" << std::endl;
@@ -77,7 +80,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
     }
 
 
-    std::vector<char> response;
+    std::vector<unsigned char> response;
 
     // protocol op
     switch (bs.readByte()) {
@@ -104,10 +107,10 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
             // craft bind response backwards and sends it
             response = {0x00, 0x04, 0x00, 0x04, 0x00, 0x01, 0x0a};
-            response.push_back(static_cast<char>(response.size()));
+            response.push_back(static_cast<unsigned char>(response.size()));
             response.push_back(0x61);
 
-            sendPacketLDAP(response, clientSocket, bs.getMessageID());
+            ps->sendPacketLDAP(response, bs.getMessageID());
 
             break;
 
@@ -186,7 +189,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
             std::cout << "sending searchResDone" << std::endl;
 
-            sendPacketLDAP(response, clientSocket, bs.getMessageID());
+            ps->sendPacketLDAP(response, bs.getMessageID());
 
             break;
         }
