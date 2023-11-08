@@ -5,31 +5,6 @@
 
 #include "parsePacket.h"
 
-void sendPacketLDAP(std::vector<char> response, int clientSocket, int messageID)
-{
-    // crafts LDAP packet backwards
-    response.push_back(static_cast<char>(messageID));
-    response.push_back(0x01);
-    response.push_back(0x02);
-    response.push_back(static_cast<char>(response.size()));
-    response.push_back(0x30);
-
-    std::reverse(response.begin(), response.end());
-
-    std::cout << "sending response" << std::endl;
-    // sends response
-
-    std::cout << "response: ";
-    for (char c : response) {
-        std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(c)) << ", ";
-    }
-
-    send(clientSocket, response.data(), response.size(), 0);
-
-
-    return;
-}
-
 void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 {
 
