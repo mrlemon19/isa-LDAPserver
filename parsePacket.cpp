@@ -13,7 +13,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
     if (bs.readByte() != 0x30){
         return; // not a ldap packet
-        std::cout << "0x30 missing" << std::endl;
     }
     //bs.setLenght(static_cast<int>(static_cast<unsigned char>(bs.readByte()))); // set lenght of packet
 
@@ -21,7 +20,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
     if (bs.readByte() != 0x02) {
         return; // not a ldap packet
-        std::cout << "0x02 missing" << std::endl;
     }
 
     switch (bs.readByte()) {
@@ -48,7 +46,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
             break;
         
         default:
-            std::cout << "message id error" << std::endl;
             // send error message not valid ldap message
             return;
             
@@ -146,8 +143,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
             }
 
             if (sizeLimit == 0) sizeLimit = 100;
-
-            std::cout << "size limit: " << sizeLimit << std::endl;
 
             if (bs.readByte() != 0x02) return; // error in search request
 
