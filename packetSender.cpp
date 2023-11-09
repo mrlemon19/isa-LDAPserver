@@ -21,7 +21,6 @@ void packetSender::sendPacketLDAP(std::vector<unsigned char> response, int messa
 
     std::reverse(response.begin(), response.end());
 
-    std::cout << "sending response" << std::endl;
     // sends response
 
     // debug print
