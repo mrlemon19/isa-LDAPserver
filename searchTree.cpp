@@ -30,6 +30,9 @@ void searchTree::search()
         return;
     }
 
+    // number of sent entries
+    int resEntSend = 0;
+
     // read DB file line by line
     std::string line;
     while (std::getline(DBStream, line)){
@@ -38,7 +41,7 @@ void searchTree::search()
         ResultEntry entry = ResultEntry(line);
 
         // check if entry matches filter
-        if (this->root->evaluate(&entry)){
+        if (this->root->evaluate(&entry) && resEntSend < this->maxResEnt){
 
             //std::cout << "match found" << std::endl;
             //std::cout << "name: " << entry.name << std::endl;
@@ -146,6 +149,9 @@ void searchTree::search()
 
             // send the packet to the client
             this->ps->sendPacketLDAP(resEntry, this->messageID);
+
+            // increment number of sent entries
+            resEntSend++;
 
         }
 
