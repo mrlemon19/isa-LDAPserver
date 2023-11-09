@@ -45,8 +45,106 @@ void searchTree::search()
             std::cout << "uid: " << entry.uid << std::endl;
             std::cout << "mail: " << entry.mail << std::endl;
 
-            // TODO create vector of the entry and send it
+            // send entry to client
+            std::vector<unsigned char> resEntry;
+
+            // add entry to vector backwards
+            // add requested attributes from entry
+            if (std::find(this->attributes.begin(), this->attributes.end(), UID) != this->attributes.end()){
+                for (int i = entry.uid.size() - 1; i >= 0; i--){
+                    resEntry.push_back(entry.uid[i]);
+                }
+                // push load lenght and type
+                resEntry.push_back(entry.uid.size());
+                resEntry.push_back(0x04);
+
+                resEntry.push_back(entry.uid.size() + 2);
+                resEntry.push_back(0x31);
+
+                // push attribute type
+                resEntry.push_back(0x64);
+                resEntry.push_back(0x69);
+                resEntry.push_back(0x75);
+
+                // push load lenght and type
+                resEntry.push_back(0x03);
+                resEntry.push_back(0x04);
+
+                // push parsial attribute list lenght
+                resEntry.push_back(entry.uid.size() + 9);
+                resEntry.push_back(0x30);
+            }
         
+            if (std::find(this->attributes.begin(), this->attributes.end(), CN) != this->attributes.end()){
+                for (int i = entry.name.size() - 1; i >= 0; i--){
+                    resEntry.push_back(entry.name[i]);
+                }
+                // push load lenght and type
+                resEntry.push_back(entry.name.size());
+                resEntry.push_back(0x04);
+
+                resEntry.push_back(entry.name.size() + 2);
+                resEntry.push_back(0x31);
+
+                // push attribute type
+                resEntry.push_back(0x6e);
+                resEntry.push_back(0x63);
+
+                // push load lenght and type
+                resEntry.push_back(0x02);
+                resEntry.push_back(0x04);
+
+                // push parsial attribute list lenght
+                resEntry.push_back(entry.name.size() + 8);
+                resEntry.push_back(0x30);
+            }
+
+            if (std::find(this->attributes.begin(), this->attributes.end(), MAIL) != this->attributes.end()){
+                for (int i = entry.mail.size() - 1; i >= 0; i--){
+                    resEntry.push_back(entry.mail[i]);
+                }
+                // push load lenght and type
+                resEntry.push_back(entry.mail.size());
+                resEntry.push_back(0x04);
+
+                resEntry.push_back(entry.mail.size() + 2);
+                resEntry.push_back(0x31);
+
+                // push attribute type "mail"
+                resEntry.push_back(0x6c);
+                resEntry.push_back(0x69);
+                resEntry.push_back(0x61);
+                resEntry.push_back(0x6d);
+
+                // push load lenght and type
+                resEntry.push_back(0x04);
+                resEntry.push_back(0x04);
+
+                // push parsial attribute list lenght
+                resEntry.push_back(entry.mail.size() + 10);
+                resEntry.push_back(0x30);
+            }
+
+            // push attribute list lenght and sing
+
+            resEntry.push_back(resEntry.size());
+            resEntry.push_back(0x30);
+
+            // push object name and lenght
+
+            for (int i = entry.uid.size() - 1; i >= 0; i--){
+                resEntry.push_back(entry.uid[i]);
+            }
+
+            resEntry.push_back(entry.uid.size());
+            resEntry.push_back(0x04);
+
+            resEntry.push_back(resEntry.size());
+            resEntry.push_back(0x64);
+
+            // send the packet to the client
+            this->ps->sendPacketLDAP(resEntry, this->messageID);
+
         }
 
     }
