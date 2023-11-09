@@ -195,6 +195,13 @@ std::vector<attributeType_t> searchTree::parseAttributes(std::vector<unsigned ch
         }
     }
 
+    if (parsedAttributes.size() == 0){
+        // no attributes specified, return default attributes
+        parsedAttributes.push_back(UID);
+        parsedAttributes.push_back(CN);
+        parsedAttributes.push_back(MAIL);
+    }
+
     return parsedAttributes;
 
 }
