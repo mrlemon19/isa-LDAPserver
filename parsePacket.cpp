@@ -112,9 +112,42 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
             if (bs.readByte() != 0x02) return; // error in search request
 
-            if (bs.readByte() != 0x01) return; // error in search request
+            //if (bs.readByte() != 0x01) return; // error in search request
 
-            bs.readByte(); // skip size limit
+            // sizelimit handle
+            int sizeLimit;
+
+            switch (bs.readByte()){
+                case 0x01: {
+                    sizeLimit = static_cast<int>(static_cast<unsigned char>(bs.readByte()));
+                    break;
+                }
+                case 0x02: {
+                    sizeLimit = static_cast<int>(static_cast<unsigned char>(bs.readByte())) << 8 |
+                                static_cast<int>(static_cast<unsigned char>(bs.readByte()));
+                    break;
+                }
+                case 0x03: {
+                    sizeLimit = static_cast<int>(static_cast<unsigned char>(bs.readByte())) << 16 |
+                                static_cast<int>(static_cast<unsigned char>(bs.readByte())) << 8 |
+                                static_cast<int>(static_cast<unsigned char>(bs.readByte()));
+                    break;
+                }
+                case 0x04: {
+                    sizeLimit = static_cast<int>(static_cast<unsigned char>(bs.readByte())) << 24 |
+                                static_cast<int>(static_cast<unsigned char>(bs.readByte())) << 16 |
+                                static_cast<int>(static_cast<unsigned char>(bs.readByte())) << 8 |
+                                static_cast<int>(static_cast<unsigned char>(bs.readByte()));
+                    break;
+                }
+                default: {
+                    return; // error in search request
+                }
+            }
+
+            if (sizeLimit == 0) sizeLimit = 100;
+
+            std::cout << "size limit: " << sizeLimit << std::endl;
 
             if (bs.readByte() != 0x02) return; // error in search request
 
@@ -154,7 +187,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
                 attributes.push_back(bs.readByte());
             }
 
-            searchTree filterTree = searchTree(filter, attributes, bs.getMessageID(), clientSocket, DBfileName, ps);
+            searchTree filterTree = searchTree(filter, attributes, bs.getMessageID(), clientSocket, DBfileName, ps, sizeLimit);
             filterTree.search();
 
             // sends search result done
