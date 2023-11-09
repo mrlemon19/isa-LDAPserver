@@ -453,5 +453,7 @@ ResultEntry::ResultEntry(std::string entry)
     this->name = entry.substr(0, firstSemicolon);
     this->uid = entry.substr(firstSemicolon + 1, secondSemicolon - firstSemicolon - 1);
     this->mail = entry.substr(secondSemicolon + 1);
+    // remove \r from mail
+    this->mail = this->mail.substr(0, this->mail.size() - 1);
 
 }
