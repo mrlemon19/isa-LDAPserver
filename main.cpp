@@ -52,11 +52,7 @@ void handleClient(int clientSocket) {
         unsigned char* pbuffer = buffer;
         ByteStream bs(pbuffer);
 
-        std::cout << "message received, parsing packet" << std::endl;
-
         parsePacket(bs, clientSocket, DBFile);
-
-        std::cout << "packet parsed" << std::endl;
 
         // Handle the message (e.g., echo back to the client)
         //std::cout << "Received from client: " << message;
@@ -138,8 +134,6 @@ int main(int argc, char *argv[]) {
         close(serverSocket);
         return 1;
     }
-
-    std::cout << "Server listening on port " << portNum << std::endl;
 
     while (true) {
         // Accept a new client connection

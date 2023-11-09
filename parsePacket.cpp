@@ -162,8 +162,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
             response.push_back(static_cast<char>(response.size()));
             response.push_back(0x65);
 
-            std::cout << "sending searchResDone" << std::endl;
-
             ps->sendPacketLDAP(response, bs.getMessageID());
 
             break;
@@ -171,8 +169,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
         case 0x42: {
             // unbind request
-
-            std::cout << "unbind request, BYE" << std::endl;
 
             if (bs.readByte() == 0x00) {
                 close(clientSocket); // exit if unbind request
