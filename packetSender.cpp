@@ -24,10 +24,11 @@ void packetSender::sendPacketLDAP(std::vector<unsigned char> response, int messa
     std::cout << "sending response" << std::endl;
     // sends response
 
-    std::cout << "response: ";
-    for (char c : response) {
-        std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(c)) << ", ";
-    }
+    // debug print
+    //std::cout << "response: ";
+    //for (char c : response) {
+    //    std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(c)) << ", ";
+    //}
 
     send(this->clientSocket, response.data(), response.size(), 0);
 

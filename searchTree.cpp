@@ -40,10 +40,10 @@ void searchTree::search()
         // check if entry matches filter
         if (this->root->evaluate(&entry)){
 
-            std::cout << "match found" << std::endl;
-            std::cout << "name: " << entry.name << std::endl;
-            std::cout << "uid: " << entry.uid << std::endl;
-            std::cout << "mail: " << entry.mail << std::endl;
+            //std::cout << "match found" << std::endl;
+            //std::cout << "name: " << entry.name << std::endl;
+            //std::cout << "uid: " << entry.uid << std::endl;
+            //std::cout << "mail: " << entry.mail << std::endl;
 
             // send entry to client
             std::vector<unsigned char> resEntry;
