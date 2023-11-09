@@ -47,7 +47,7 @@ class searchTree
 {
 public:
     searchTree();
-    searchTree(std::vector<unsigned char> filter, std::vector<unsigned char> attributes, int messageID, int clientSocket, std::string DBfileName, packetSender* ps);
+    searchTree(std::vector<unsigned char> filter, std::vector<unsigned char> attributes, int messageID, int clientSocket, std::string DBfileName, packetSender* ps, int sizeLimit);
     std::vector<attributeType_t> parseAttributes(std::vector<unsigned char> attributes);
     void search();
 
