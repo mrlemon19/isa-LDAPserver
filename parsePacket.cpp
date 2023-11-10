@@ -53,6 +53,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
 
     std::vector<unsigned char> response;
+    unsigned char versionLDAP;
 
     // protocol op
     switch (bs.readByte()) {
@@ -66,7 +67,8 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
             if (bs.readByte() != 0x01) return; // error in bind request
 
             // TODO check if version is supported
-            if (bs.readByte() != 0x03) return; // not suported version?
+            versionLDAP = bs.readByte();
+            if (versionLDAP != 0x03 && versionLDAP != 0x02) return; // not suported version?
 
             if (bs.readByte() != 0x04) return; // error in bind request
 
