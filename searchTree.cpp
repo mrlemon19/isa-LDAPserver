@@ -141,7 +141,13 @@ void searchTree::search()
                 resEntry.push_back(entry.uid[i]);
             }
 
-            resEntry.push_back(entry.uid.size());
+            // push "uid=" backwards
+            resEntry.push_back(0x3d);
+            resEntry.push_back(0x64);
+            resEntry.push_back(0x69);
+            resEntry.push_back(0x75);
+
+            resEntry.push_back(entry.uid.size() + 4);
             resEntry.push_back(0x04);
 
             resEntry.push_back(resEntry.size());
