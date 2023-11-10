@@ -74,10 +74,9 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
             bs.readByte(); // skip byte
 
-            // TODO chek rest of bind request
-            //if (bs.readByte() != 0x80) return; // not a simple bind request
+            if (bs.readByte() != 0x80) return; // not a simple bind request
 
-            //if (bs.readByte() != 0x00) return; // not a simple bind request
+            if (bs.readByte() != 0x00) return; // not a simple bind request
 
             // craft bind response backwards and sends it
             response = {0x00, 0x04, 0x00, 0x04, 0x00, 0x01, 0x0a};
