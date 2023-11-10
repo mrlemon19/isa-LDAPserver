@@ -43,11 +43,6 @@ void searchTree::search()
         // check if entry matches filter
         if (this->root->evaluate(&entry) && resEntSend < this->maxResEnt){
 
-            //std::cout << "match found" << std::endl;
-            //std::cout << "name: " << entry.name << std::endl;
-            //std::cout << "uid: " << entry.uid << std::endl;
-            //std::cout << "mail: " << entry.mail << std::endl;
-
             // send entry to client
             std::vector<unsigned char> resEntry;
 
@@ -532,9 +527,6 @@ std::vector<std::vector<unsigned char>> searchNode::separateFilter()
 {
 
     std::vector<std::vector<unsigned char>> filters;
-    
-    //this->readChar();   // skip filter type
-    //this->readChar();   // skip filter lenght
 
     unsigned char filterType = this->readChar();
 

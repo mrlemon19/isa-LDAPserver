@@ -14,7 +14,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
     if (bs.readByte() != 0x30){
         return; // not a ldap packet
     }
-    //bs.setLenght(static_cast<int>(static_cast<unsigned char>(bs.readByte()))); // set lenght of packet
 
     bs.readByte(); // skip lenght
 
@@ -23,6 +22,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
     }
 
     switch (bs.readByte()) {
+        // read message id
         case 0x01:
             bs.setMessageID(static_cast<int>(static_cast<unsigned char>(bs.readByte())));
             break;
@@ -66,7 +66,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
             if (bs.readByte() != 0x01) return; // error in bind request
 
-            // TODO check if version is supported
+            // read version
             versionLDAP = bs.readByte();
             if (versionLDAP != 0x03 && versionLDAP != 0x02) return; // not suported version?
 
@@ -78,7 +78,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
 
             if (bs.readByte() != 0x00) return; // not a simple bind request
 
-            // craft bind response backwards and sends it
+            // craft bind response backwards and sends it via packet sender
             response = {0x00, 0x04, 0x00, 0x04, 0x00, 0x01, 0x0a};
             response.push_back(static_cast<unsigned char>(response.size()));
             response.push_back(0x61);
@@ -109,8 +109,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
             bs.readByte(); // skip ldap deref aliases
 
             if (bs.readByte() != 0x02) return; // error in search request
-
-            //if (bs.readByte() != 0x01) return; // error in search request
 
             // sizelimit handle
             int sizeLimit;
@@ -158,7 +156,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
             bs.readByte(); // skip types only
 
             // parsing filter
-
             
             std::vector<unsigned char> filter;
             std::vector<unsigned char> attributes;
@@ -166,7 +163,8 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
             // TODO catch when there is no filter or attributes
 
             filter.push_back(bs.readByte());
-            unsigned char lenght = bs.readByte();    // lenght of filter
+            unsigned char lenght = bs.readByte(); // lenght of filter
+            if (lenght == 0x00) return; // no filter
             filter.push_back(lenght);
             // moving filter to vector
             for (int i = 0; i < static_cast<int>(static_cast<unsigned char>(lenght)); i++) {
@@ -174,7 +172,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
             }
 
             // parsing attributes
-            
+
             if (bs.readByte() != 0x30) return; // error in search request
 
             int attributesLenght = bs.readByte(); // lenght of attributes
@@ -208,7 +206,6 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName)
         }
 
         default: {
-            // send error message not supported operation
             return;
         }
     }

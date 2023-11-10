@@ -47,16 +47,12 @@ void handleClient(int clientSocket) {
         }
 
         // Process received data
-        //message.assign(buffer, bytesRead);
 
         unsigned char* pbuffer = buffer;
         ByteStream bs(pbuffer);
 
         parsePacket(bs, clientSocket, DBFile);
 
-        // Handle the message (e.g., echo back to the client)
-        //std::cout << "Received from client: " << message;
-        //send(clientSocket, message.c_str(), message.size(), 0);
     }
 
     // Close the client socket
