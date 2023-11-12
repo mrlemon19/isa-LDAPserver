@@ -222,10 +222,8 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName) {
   case 0x42: {
     // unbind request
 
-    if (bs.readByte() == 0x00) {
-      close(clientSocket); // exit if unbind request
-      return;
-    }
+    close(clientSocket); // unbind request, end connection
+    return;
 
     break;
   }
