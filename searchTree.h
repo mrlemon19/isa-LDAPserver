@@ -26,7 +26,8 @@ enum filterType_t{
 enum attributeType_t{
     UID,
     CN,
-    MAIL
+    MAIL,
+    UNKNOWN
 };
 
 class ResultEntry

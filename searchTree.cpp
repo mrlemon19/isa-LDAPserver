@@ -500,8 +500,7 @@ attributeType_t searchNode::getAttributeType(std::string attributeType) {
   } else if (attributeType == "mail") {
     return MAIL;
   } else {
-    std::cout << "Invalid attribute type" << std::endl;
-    return UID;
+    return UNKNOWN;
   }
 }
 
