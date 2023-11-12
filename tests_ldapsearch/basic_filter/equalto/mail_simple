@@ -1,0 +1,1 @@
+ldapsearch -x -H ldap://merlin.fit.vutbr.cz:20021 "(mail=xlukas18@stud.fit.vutbr.cz)"

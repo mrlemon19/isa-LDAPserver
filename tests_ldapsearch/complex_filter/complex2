@@ -1,0 +1,1 @@
+ldapsearch -x -H ldap://merlin.fit.vutbr.cz:20021 "(|(&(uid=*xlukas*)(uid=*18))(&(uid=*xpoliv*)(uid=*07)))"

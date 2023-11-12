@@ -1,0 +1,1 @@
+ldapsearch -x -z 500 -H ldap://merlin.fit.vutbr.cz:20021 "(mail=*fit*)"
