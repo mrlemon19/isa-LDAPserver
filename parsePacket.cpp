@@ -229,6 +229,29 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName) {
   }
 
   default: {
+    // send error message not valid ldap message
+    std::vector<unsigned char> errorMessage = {0x64, 0x65, 0x74, 0x72, 0x6F, 0x70, 0x70, 0x75, 0x73, 0x20, 0x74, 0x6F, 0x6E, 0x20, 0x72, 0x65, 0x74, 0x6C, 0x69, 0x46};
+    
+    // push lenght
+    errorMessage.push_back(static_cast<unsigned char>(errorMessage.size()));
+    errorMessage.push_back(0x04);
+
+    // push result code
+    errorMessage.push_back(0x35);
+    errorMessage.push_back(0x01);
+    errorMessage.push_back(0x0a);
+
+    errorMessage.push_back(0x01);
+    errorMessage.push_back(0x0a);
+
+    // push lenght and protocol op
+    errorMessage.push_back(static_cast<unsigned char>(errorMessage.size()));
+    errorMessage.push_back(0x65);
+
+    // send the message
+    ps->sendPacketLDAP(errorMessage, bs.getMessageID());
+
+    close(clientSocket);
     return;
   }
   }
