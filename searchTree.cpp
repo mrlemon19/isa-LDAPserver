@@ -277,7 +277,6 @@ void searchNode::parseFilter() {
     // parse attribute type
 
     if (this->readChar() != 0x04) {
-      std::cout << "Invalid attribute type" << std::endl;
       break;
     }
 
@@ -292,7 +291,6 @@ void searchNode::parseFilter() {
 
     // parse attribute value
     if (this->readChar() != 0x04) {
-      std::cout << "Invalid attribute value" << std::endl;
       break;
     }
 
@@ -310,7 +308,6 @@ void searchNode::parseFilter() {
     // parse attribute type
 
     if (this->readChar() != 0x04) {
-      std::cout << "Invalid attribute type" << std::endl;
       break;
     }
 
@@ -326,7 +323,6 @@ void searchNode::parseFilter() {
     // parse attribute value
 
     if (this->readChar() != 0x30) {
-      std::cout << "Invalid attribute value" << std::endl;
       break;
     }
 
@@ -385,7 +381,6 @@ void searchNode::parseFilter() {
   }
 
   default: {
-    std::cout << "Invalid filter type" << std::endl;
     break;
   }
   }
@@ -410,7 +405,6 @@ bool searchNode::evaluate(ResultEntry *entry) {
       break;
     }
     default: {
-      std::cout << "Invalid attribute type" << std::endl;
       return false;
       break;
     }
@@ -435,7 +429,6 @@ bool searchNode::evaluate(ResultEntry *entry) {
       break;
     }
     default: {
-      std::cout << "Invalid attribute type" << std::endl;
       return false;
       break;
     }
@@ -479,7 +472,6 @@ bool searchNode::evaluate(ResultEntry *entry) {
   }
 
   else {
-    std::cout << "Invalid filter type" << std::endl;
     return false;
   }
 
