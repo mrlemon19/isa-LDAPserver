@@ -196,8 +196,7 @@ searchTree::parseAttributes(std::vector<unsigned char> attributes) {
     } else if (attribute == "mail") {
       parsedAttributes.push_back(MAIL);
     } else {
-      std::cout << "Invalid attribute type" << std::endl;
-      return std::vector<attributeType_t>{UID, CN, MAIL};
+      return std::vector<attributeType_t>{};
     }
   }
 
