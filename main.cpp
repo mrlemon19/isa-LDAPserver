@@ -4,7 +4,6 @@
 // @author: xlukas18
 
 #include "main.h"
-int MAX_CLIENTS = 10;
 std::string DBFile;
 
 bool isValidPort(std::string port) {
@@ -40,7 +39,7 @@ void handleClient(int clientSocket) {
       break;
     }
 
-    // Process received data
+    // process received data
 
     unsigned char *pbuffer = buffer;
     ByteStream bs(pbuffer);
@@ -48,7 +47,7 @@ void handleClient(int clientSocket) {
     parsePacket(bs, clientSocket, DBFile);
   }
 
-  // Close the client socket
+  // close the client socket
   close(clientSocket);
 }
 
@@ -89,24 +88,24 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  // Create socket
+  // create socket
   int serverSocket, clientSocket;
   struct sockaddr_in serverAddr, clientAddr;
   socklen_t clientAddrLen = sizeof(clientAddr);
 
-  // Create socket
+  // create socket
   serverSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (serverSocket == -1) {
     perror("Socket creation failed");
     return 1;
   }
 
-  // Set up server address
+  // set up server address
   serverAddr.sin_family = AF_INET;
   serverAddr.sin_port = htons(portNum);
   serverAddr.sin_addr.s_addr = INADDR_ANY;
 
-  // Bind socket to address
+  // bind socket to address
   if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) ==
       -1) {
     perror("Binding failed");
@@ -114,15 +113,15 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  // Listen for incoming connections
-  if (listen(serverSocket, MAX_CLIENTS) == -1) {
+  // listen for incoming connections
+  if (listen(serverSocket, 20) == -1) {
     perror("Listening failed");
     close(serverSocket);
     return 1;
   }
 
   while (true) {
-    // Accept a new client connection
+    // accept a new client connection
     clientSocket =
         accept(serverSocket, (struct sockaddr *)&clientAddr, &clientAddrLen);
     if (clientSocket == -1) {
@@ -130,11 +129,11 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
-    // Create a new thread to handle the client and immediately detach it
+    // create a new thread to handle the client and immediately detach it
     std::thread(handleClient, clientSocket).detach();
   }
 
-  // Close the server socket (this line will not be reached)
+  // close the server socket (this line will not be reached)
   close(serverSocket);
 
   return 0;

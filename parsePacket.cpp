@@ -49,7 +49,7 @@ void parsePacket(ByteStream bs, int clientSocket, std::string DBfileName) {
     break;
 
   default:
-    // send error message not valid ldap message
+    // ignore not valid ldap message
     return;
   }
 
